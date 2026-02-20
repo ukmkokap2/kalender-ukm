@@ -15,63 +15,30 @@ export default function Home() {
   const [searchPetugas, setSearchPetugas] = useState("")
 
   const petugasList = [
-    "dr. Arum Ermi Wijayanti",
-    "dr. Erry Kurniawan",
-    "drg. Purba Pramana",
-    "Iwan Riswandi, AMK",
-    "Insana Prasetya, AMK",
-    "Susilowati, A.Md.Kep",
-    "Suminten, A.Md",
-    "Cahyani Agustina Prihastuti, S.Tr.Keb",
-    "Tri Murni, A.Md.Keb",
-    "Siti Khotijah, S.Tr.Keb",
-    "Lilian Adven CN, S.Tr.Keb",
-    "Noor Syamsiah, S.Tr.Keb",
-    "Hadrotul Ma'wa, S.Tr.Kes",
-    "Yuniarti Parptiwi, AMAK",
-    "Latiful Hakim, AMD",
-    "Widiarto, SST",
-    "Sahir, AMKL",
-    "Setyo Hadiriyanto, A.Md",
-    "Ade Doni Irawan, A.Md.Farm",
-    "Tri Anggoro, S.M.",
-    "Ria Wahyu Dewanti, S.Farm.Apt",
-    "Siti Hidayati, S.Far.Apt",
-    "Zelin Afika, SE",
-    "Devta Virga Nirwana",
-    "Muh Tozidaini",
-    "Khasanatun Masruroh, S.Gz.",
-    "Rina Prasetya, Amd. Keb.",
-    "Kardiyono",
-    "Rina Dwi Mawarti",
-    "Dwi Tyas Wardani",
-    "Sutriyanto",
-    "Sunarta",
-    "NINIK SRIWIJIASTUTI",
-    "MUJIYANA",
-    "MUJIMAN",
-    "HARYANTA",
-    "ANTO ARIYANTO",
-    "ENIK MULYANI",
-    "ERNI KUSRINI",
-    "AMIRUDIN",
-    "FEBRI EKO SUSANTI",
-    "SUWANTI",
-    "FUAD WARDANI",
-    "MARJOKO"
+    "dr. Arum Ermi Wijayanti","dr. Erry Kurniawan","drg. Purba Pramana",
+    "Iwan Riswandi, AMK","Insana Prasetya, AMK","Susilowati, A.Md.Kep",
+    "Suminten, A.Md","Cahyani Agustina Prihastuti, S.Tr.Keb",
+    "Tri Murni, A.Md.Keb","Siti Khotijah, S.Tr.Keb","Lilian Adven CN, S.Tr.Keb",
+    "Noor Syamsiah, S.Tr.Keb","Hadrotul Ma'wa, S.Tr.Kes","Yuniarti Parptiwi, AMAK",
+    "Latiful Hakim, AMD","Widiarto, SST","Sahir, AMKL",
+    "Setyo Hadiriyanto, A.Md","Ade Doni Irawan, A.Md.Farm",
+    "Tri Anggoro, S.M.","Ria Wahyu Dewanti, S.Farm.Apt",
+    "Siti Hidayati, S.Far.Apt","Zelin Afika, SE","Devta Virga Nirwana",
+    "Muh Tozidaini","Khasanatun Masruroh, S.Gz.","Rina Prasetya, Amd. Keb.",
+    "Kardiyono","Rina Dwi Mawarti","Dwi Tyas Wardani",
+    "Sutriyanto","Sunarta","NINIK SRIWIJIASTUTI","MUJIYANA","MUJIMAN",
+    "HARYANTA","ANTO ARIYANTO","ENIK MULYANI","ERNI KUSRINI",
+    "AMIRUDIN","FEBRI EKO SUSANTI","SUWANTI","FUAD WARDANI","MARJOKO"
   ]
 
   const filteredPetugas = petugasList.filter(p =>
     p.toLowerCase().includes(searchPetugas.toLowerCase())
   )
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  useEffect(() => { fetchData() }, [])
 
   async function fetchData() {
     const { data } = await supabase.from('kegiatan').select('*')
-
     if (data) {
       setEvents(
         data.map(item => ({
@@ -82,7 +49,7 @@ export default function Home() {
     }
   }
 
-  function handleDateClick(info: any) {
+  function handleDateClick(info:any) {
     setSelectedDate(info.dateStr)
     setShowForm(true)
   }
@@ -108,7 +75,7 @@ export default function Home() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-blue-700">
+      <h1 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">
         Kalender Kegiatan UKM
       </h1>
 
@@ -119,82 +86,117 @@ export default function Home() {
         events={events}
       />
 
-      {/* POPUP MODAL */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           
-          {/* background overlay */}
+          {/* overlay blur */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 backdrop-blur-md"
             onClick={() => setShowForm(false)}
           />
 
-          {/* modal box */}
-          <div className="relative bg-white p-6 rounded-xl shadow-xl w-80 animate-fadeIn">
-            <h2 className="font-bold text-lg mb-3 text-blue-700">
+          {/* GLASS MODAL */}
+          <div className="
+            relative w-80 p-6 rounded-2xl
+            bg-white/80 dark:bg-gray-900/80
+            backdrop-blur-xl
+            border border-white/40 dark:border-gray-700
+            shadow-2xl
+            animate-fadeIn
+          ">
+
+            <h2 className="text-lg font-bold mb-3 text-blue-700 dark:text-blue-400">
               Tambah Kegiatan
             </h2>
 
-            <p className="text-sm mb-2">Tanggal: {selectedDate}</p>
+            <p className="text-sm mb-3 text-gray-700 dark:text-gray-300">
+              Tanggal: {selectedDate}
+            </p>
 
             <input
               type="text"
               placeholder="Nama kegiatan"
-              className="w-full border p-2 rounded mb-3"
               value={kegiatan}
-              onChange={(e) => setKegiatan(e.target.value)}
+              onChange={(e)=>setKegiatan(e.target.value)}
+              className="
+                w-full mb-3 p-2 rounded-lg
+                border border-gray-300 dark:border-gray-600
+                bg-white dark:bg-gray-800
+                text-gray-800 dark:text-white
+                placeholder-gray-400
+                focus:ring-2 focus:ring-blue-500 outline-none
+              "
             />
 
-            {/* SEARCH PETUGAS */}
+            {/* SEARCH */}
             <input
               type="text"
               placeholder="Cari petugas..."
-              className="w-full border p-2 rounded mb-2"
               value={searchPetugas}
-              onChange={(e) => setSearchPetugas(e.target.value)}
+              onChange={(e)=>setSearchPetugas(e.target.value)}
+              className="
+                w-full mb-2 p-2 rounded-lg
+                border border-gray-300 dark:border-gray-600
+                bg-white dark:bg-gray-800
+                text-gray-800 dark:text-white
+                placeholder-gray-400
+                focus:ring-2 focus:ring-blue-500 outline-none
+              "
             />
 
-            <div className="border rounded max-h-40 overflow-y-auto mb-2">
-              {filteredPetugas.map((p, i) => (
+            <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-300 dark:border-gray-600 mb-2">
+              {filteredPetugas.map((p,i)=>(
                 <div
                   key={i}
-                  onClick={() => {
+                  onClick={()=>{
                     setPetugas(p)
                     setSearchPetugas(p)
                   }}
-                  className={`p-2 cursor-pointer hover:bg-blue-100 ${
-                    petugas === p ? "bg-blue-200" : ""
-                  }`}
+                  className={`
+                    px-3 py-2 cursor-pointer
+                    text-gray-800 dark:text-gray-200
+                    hover:bg-blue-100 dark:hover:bg-blue-900/40
+                    ${petugas===p && "bg-blue-200 dark:bg-blue-800"}
+                  `}
                 >
                   {p}
                 </div>
               ))}
-              {filteredPetugas.length === 0 && (
-                <div className="p-2 text-gray-400">Tidak ditemukan</div>
-              )}
             </div>
 
             {petugas && (
-              <p className="text-sm text-green-700 mb-2">
+              <p className="text-sm text-green-600 dark:text-green-400 mb-2">
                 ✔ Dipilih: {petugas}
               </p>
             )}
 
             <div className="flex justify-end gap-2 mt-4">
               <button
-                onClick={() => setShowForm(false)}
-                className="px-3 py-1 bg-gray-300 rounded"
+                onClick={()=>setShowForm(false)}
+                className="
+                  px-4 py-1 rounded-lg
+                  bg-gray-200 dark:bg-gray-700
+                  text-gray-700 dark:text-gray-200
+                  hover:scale-105 transition
+                "
               >
                 Batal
               </button>
 
               <button
                 onClick={simpanData}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                className="
+                  px-4 py-1 rounded-lg text-white
+                  bg-gradient-to-r from-blue-600 to-blue-500
+                  hover:from-blue-700 hover:to-blue-600
+                  shadow-md hover:shadow-lg
+                  hover:scale-105 transition
+                "
               >
                 Simpan
               </button>
             </div>
+
           </div>
         </div>
       )}
