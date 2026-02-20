@@ -8,8 +8,11 @@ import { supabase } from '../lib/supabaseClient'
 
 export default function Home() {
   const [events, setEvents] = useState<any[]>([])
+  const [selectedDate, setSelectedDate] = useState("")
+  const [showForm, setShowForm] = useState(false)
+  const [kegiatan, setKegiatan] = useState("")
+  const [petugas, setPetugas] = useState("")
 
-  // daftar petugas
   const petugasList = [
     "dr. Arum Ermi Wijayanti",
     "dr. Erry Kurniawan",
@@ -67,38 +70,33 @@ export default function Home() {
     if (data) {
       setEvents(
         data.map((item) => ({
-          title: `${item.nama_kegiatan}${item.penanggung_jawab ? " - " + item.penanggung_jawab : ""}`,
+          title: `${item.nama_kegiatan} - ${item.penanggung_jawab}`,
           date: item.tanggal,
         }))
       )
     }
   }
 
-  async function handleDateClick(info: any) {
+  function handleDateClick(info: any) {
+    setSelectedDate(info.dateStr)
+    setShowForm(true)
+  }
 
-    const pilihan = prompt(
-      "Pilih nomor petugas:\n\n" +
-      petugasList.map((p, i) => `${i + 1}. ${p}`).join("\n")
-    )
-
-    if (!pilihan) return
-
-    const namaPetugas = petugasList[Number(pilihan) - 1]
-
-    if (!namaPetugas) {
-      alert("Nomor tidak valid")
+  async function simpanData() {
+    if (!kegiatan || !petugas) {
+      alert("Lengkapi data!")
       return
     }
 
-    const kegiatan = prompt("Nama kegiatan:")
-    if (!kegiatan) return
-
     await supabase.from('kegiatan').insert({
-      tanggal: info.dateStr,
+      tanggal: selectedDate,
       nama_kegiatan: kegiatan,
-      penanggung_jawab: namaPetugas
+      penanggung_jawab: petugas,
     })
 
+    setShowForm(false)
+    setKegiatan("")
+    setPetugas("")
     fetchData()
   }
 
@@ -114,6 +112,56 @@ export default function Home() {
         dateClick={handleDateClick}
         events={events}
       />
+
+      {/* FORM POPUP */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-80">
+            <h2 className="font-bold text-lg mb-3 text-blue-700">
+              Tambah Kegiatan
+            </h2>
+
+            <p className="text-sm mb-2">Tanggal: {selectedDate}</p>
+
+            <input
+              type="text"
+              placeholder="Nama kegiatan"
+              className="w-full border p-2 rounded mb-3"
+              value={kegiatan}
+              onChange={(e) => setKegiatan(e.target.value)}
+            />
+
+            <select
+              className="w-full border p-2 rounded mb-4"
+              value={petugas}
+              onChange={(e) => setPetugas(e.target.value)}
+            >
+              <option value="">Pilih Petugas</option>
+              {petugasList.map((p, i) => (
+                <option key={i} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowForm(false)}
+                className="px-3 py-1 bg-gray-300 rounded"
+              >
+                Batal
+              </button>
+
+              <button
+                onClick={simpanData}
+                className="px-3 py-1 bg-blue-600 text-white rounded"
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
