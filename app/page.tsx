@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient'
 
 export default function Home() {
   const [events, setEvents] = useState<any[]>([])
